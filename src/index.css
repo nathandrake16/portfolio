@@ -1,0 +1,113 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    border-color: #1e293b;
+  }
+  
+  /* Pixel rendering sharp edges */
+  .pixelated {
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+  }
+
+  /* Custom retro scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0a0e17;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #1e293b;
+    border: 1px solid #00f5d4;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #00f5d4;
+  }
+}
+
+/* CRT Scanline Overlay */
+.crt-overlay {
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%, 
+    rgba(0, 0, 0, 0.25) 50%
+  ), linear-gradient(
+    90deg,
+    rgba(255, 0, 0, 0.03),
+    rgba(0, 255, 0, 0.01),
+    rgba(0, 0, 255, 0.03)
+  );
+  background-size: 100% 4px, 6px 100%;
+  pointer-events: none;
+}
+
+/* Retro Glassmorphism */
+.glass-panel {
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-panel-cyan {
+  background: rgba(10, 25, 35, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 245, 212, 0.3);
+}
+
+.glass-panel-red {
+  background: rgba(28, 15, 20, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 70, 85, 0.3);
+}
+
+/* Pixel Border Utility */
+.pixel-border {
+  box-shadow: 
+    -3px 0 0 0 #000,
+    3px 0 0 0 #000,
+    0 -3px 0 0 #000,
+    0 3px 0 0 #000,
+    -6px 0 0 0 #00f5d4,
+    6px 0 0 0 #00f5d4,
+    0 -6px 0 0 #00f5d4,
+    0 6px 0 0 #00f5d4;
+}
+
+.pixel-box {
+  box-shadow: 4px 4px 0px 0px #000;
+  border: 2px solid #1e293b;
+}
+
+.pixel-box-cyan {
+  box-shadow: 4px 4px 0px 0px #000;
+  border: 2px solid #00f5d4;
+}
+
+.pixel-box-red {
+  box-shadow: 4px 4px 0px 0px #000;
+  border: 2px solid #ff4655;
+}
+
+.pixel-box-gold {
+  box-shadow: 4px 4px 0px 0px #000;
+  border: 2px solid #f59e0b;
+}
+
+/* Text glow effects */
+.text-glow-cyan {
+  text-shadow: 0 0 8px rgba(0, 245, 212, 0.6);
+}
+
+.text-glow-red {
+  text-shadow: 0 0 8px rgba(255, 70, 85, 0.6);
+}
+
+.text-glow-gold {
+  text-shadow: 0 0 8px rgba(245, 158, 11, 0.6);
+}
