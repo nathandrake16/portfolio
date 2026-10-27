@@ -1,4 +1,5 @@
 import { PortfolioData } from '../types';
+import { asset } from '../utils/assets';
 
 /**
  * ============================================================================
@@ -17,7 +18,7 @@ export const portfolioData: PortfolioData = {
   personal: {
     name: 'Shahadat',
     fullName: 'Md. Shahadat Hossain Shamim',
-    avatarPhoto: '/images/shahadat.jpg', // Replace with your custom photo in public/images/
+    avatarPhoto: asset('/images/shahadat.jpg'), // Replace with your custom photo in public/images/
     headline: "Hi, I'm Shahadat. Always On The Run.",
     subHeadline: 'CS Grad Bridging AI & Product | Product & Data Enthusiast',
     about:
@@ -29,7 +30,7 @@ export const portfolioData: PortfolioData = {
     phone: '+8801317785593',
     linkedin: 'https://linkedin.com/in/shahadathossain16',
     github: 'https://github.com/nathandrake16',
-    cvPdfUrl: '/MD_Shahadat_Hossain_Main.pdf',
+    cvPdfUrl: asset('/MD_Shahadat_Hossain_Main.pdf'),
     socials: [
       {
         platform: 'LinkedIn',
@@ -459,7 +460,7 @@ export const portfolioData: PortfolioData = {
       period: 'Ongoing',
       badge: '20x Blood Donor',
       badgeColor: '#ff4655',
-      image: '/images/community/blood-donation.jpg',
+      image: asset('/images/community/blood-donation.jpg'),
       facebookUrl: 'https://www.facebook.com/photo?fbid=113456780835966&set=pcb.113457460835898',
       bullets: [
         'Personally donated blood 20 times to patients in urgent medical emergencies across Dhaka and Rajshahi hospitals.',
@@ -479,10 +480,10 @@ export const portfolioData: PortfolioData = {
       period: 'Nov 2020 – Dec 2023',
       badge: 'Executive Leadership',
       badgeColor: '#f59e0b',
-      image: '/images/community/winter-relief.jpg',
+      image: asset('/images/community/winter-relief.jpg'),
       gallery: [
-        '/images/community/winter-relief.jpg',
-        '/images/community/ramadan-iftar.jpg',
+        asset('/images/community/winter-relief.jpg'),
+        asset('/images/community/ramadan-iftar.jpg'),
       ],
       galleryCaptions: [
         '❄️ Winter Blanket Drive (200+ Blankets)',
@@ -518,10 +519,10 @@ export const portfolioData: PortfolioData = {
       period: 'Sep 2022 – Dec 2022',
       badge: 'Digital Literacy',
       badgeColor: '#00f5d4',
-      image: '/images/community/srijon-certificate.jpg',
+      image: asset('/images/community/srijon-certificate.jpg'),
       gallery: [
-        '/images/community/srijon-certificate.jpg',
-        '/images/community/srijon-class.jpg',
+        asset('/images/community/srijon-certificate.jpg'),
+        asset('/images/community/srijon-class.jpg'),
       ],
       galleryCaptions: [
         '📜 BRAC University Certificate of Completion',
@@ -551,10 +552,10 @@ export const portfolioData: PortfolioData = {
       tag: 'Motorcycle Touring',
       description:
         'Long highway ride from Dhaka to Sreemangal on my blue Honda motorcycle. Cruised through scenic tea estates and reached Baikka Beel Permanent Fish Sanctuary in Moulvibazar. Open asphalt and fresh air are the ultimate reset.',
-      image: '/images/hobbies/bike-sreemangal-2.jpg',
+      image: asset('/images/hobbies/bike-sreemangal-2.jpg'),
       gallery: [
-        '/images/hobbies/bike-sreemangal-2.jpg',
-        '/images/hobbies/bike-sreemangal-1.jpg',
+        asset('/images/hobbies/bike-sreemangal-2.jpg'),
+        asset('/images/hobbies/bike-sreemangal-1.jpg'),
       ],
       stats: [
         { label: 'Expedition', value: 'Dhaka ➔ Sreemangal' },
@@ -570,7 +571,7 @@ export const portfolioData: PortfolioData = {
       tag: 'Skateboarding',
       description:
         'Learning to skateboard has been an exercise in patience, balance, and falling until you land the trick. Finding smooth pavement and cruising around campus grounds is the ultimate flow state.',
-      video: '/images/hobbies/skating.mp4',
+      video: asset('/images/hobbies/skating.mp4'),
       videoRotation: 90,
       stats: [
         { label: 'Current Quest', value: 'Mastering Kickturns & Ollies' },
@@ -585,7 +586,7 @@ export const portfolioData: PortfolioData = {
       subtitle: '1st Runners-Up @ Colosseum 1.0 (BRACU Valorant Championship)',
       tag: 'Competitive Esports',
       badge: 'Peak Immortal',
-      image: '/images/hobbies/valorant.jpg',
+      image: asset('/images/hobbies/valorant.jpg'),
       facebookUrl:
         'https://www.facebook.com/photo?fbid=137226712779869&set=a.107579692411238',
       description:

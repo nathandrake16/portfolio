@@ -237,7 +237,7 @@ export const Zone5GuildHall: React.FC<Zone5Props> = ({ onNextZone }) => {
                       </a>
                     ) : item.id === 'srijon' ? (
                       <a
-                        href="/images/community/srijon-certificate.jpg"
+                        href={item.image || '/images/community/srijon-certificate.jpg'}
                         target="_blank"
                         rel="noreferrer"
                         onClick={() => sound.playClick()}

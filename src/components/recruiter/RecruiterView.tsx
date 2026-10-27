@@ -555,7 +555,7 @@ export const RecruiterView: React.FC<RecruiterViewProps> = ({ onSwitchToGameMode
 
                   {comm.id === 'srijon' && (
                     <a
-                      href="/images/community/srijon-certificate.jpg"
+                      href={comm.image || '/images/community/srijon-certificate.jpg'}
                       target="_blank"
                       rel="noreferrer"
                       className="inline-flex items-center space-x-1.5 text-xs text-cyber-cyan hover:underline font-mono mt-1"
