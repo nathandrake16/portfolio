@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Gamepad2, ExternalLink, Terminal, Sparkles, ChevronRight, CheckCircle2, Star, Cpu } from 'lucide-react';
 import { GithubIcon } from '../icons/BrandIcons';
 import { portfolioData } from '../../data/portfolioData';
@@ -13,8 +13,29 @@ export const Zone4Arcade: React.FC<Zone4Props> = ({ onNextZone }) => {
   const { projects, skills } = portfolioData;
   const [selectedProjectId, setSelectedProjectId] = useState<string>(projects[0].id);
   const [activeTab, setActiveTab] = useState<'cartridges' | 'loadout'>('cartridges');
+  const cartridgeRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
   const activeProject = projects.find((p) => p.id === selectedProjectId) || projects[0];
+
+  const handleSelectProject = (id: string) => {
+    sound.playCoin();
+    setSelectedProjectId(id);
+
+    // On mobile screens (< 768px), smoothly scroll so the clicked cartridge & details are in view
+    if (window.innerWidth < 768) {
+      setTimeout(() => {
+        const el = cartridgeRefs.current[id];
+        if (el) {
+          const navOffset = 64;
+          const top = el.getBoundingClientRect().top + window.pageYOffset - navOffset;
+          window.scrollTo({
+            top: Math.max(0, top),
+            behavior: 'smooth',
+          });
+        }
+      }, 60);
+    }
+  };
 
   const renderProjectDetails = (project: typeof activeProject) => (
     <div className="glass-panel border-2 border-slate-700 p-4 sm:p-6 shadow-pixel space-y-4">
@@ -147,9 +168,9 @@ export const Zone4Arcade: React.FC<Zone4Props> = ({ onNextZone }) => {
 
       <div className="max-w-6xl mx-auto w-full">
         {activeTab === 'cartridges' ? (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
             {/* Left Column: Cartridge Shelf */}
-            <div className="lg:col-span-5 space-y-3">
+            <div className="md:col-span-5 space-y-3">
               <div className="text-xs font-pixel text-slate-400 mb-2 flex items-center gap-1.5">
                 <Gamepad2 className="w-3.5 h-3.5 text-cyber-purple" />
                 INSERT CARTRIDGE:
@@ -158,12 +179,15 @@ export const Zone4Arcade: React.FC<Zone4Props> = ({ onNextZone }) => {
               {projects.map((project, idx) => {
                 const isSelected = selectedProjectId === project.id;
                 return (
-                  <div key={project.id} className="space-y-3">
+                  <div
+                    key={project.id}
+                    ref={(el) => {
+                      cartridgeRefs.current[project.id] = el;
+                    }}
+                    className="space-y-3"
+                  >
                     <div
-                      onClick={() => {
-                        sound.playCoin();
-                        setSelectedProjectId((prev) => (prev === project.id ? '' : project.id));
-                      }}
+                      onClick={() => handleSelectProject(project.id)}
                       className={`cursor-pointer p-3.5 border-2 transition-all shadow-pixel relative group ${
                         isSelected
                           ? 'bg-slate-900 border-cyber-purple shadow-[0_0_15px_rgba(168,85,247,0.4)]'
@@ -198,9 +222,12 @@ export const Zone4Arcade: React.FC<Zone4Props> = ({ onNextZone }) => {
                           <span className="text-[10px] font-mono px-2 py-0.5 bg-slate-900 border border-slate-700 text-slate-300">
                             {project.category}
                           </span>
+                          <span className="md:hidden text-[9px] font-pixel text-slate-400">
+                            {isSelected ? 'OPEN ▼' : 'VIEW >'}
+                          </span>
                           <ChevronRight
                             className={`w-4 h-4 transition-transform duration-200 ${
-                              isSelected ? 'text-cyber-purple rotate-90' : 'text-slate-600'
+                              isSelected ? 'text-cyber-purple md:translate-x-1 rotate-90 md:rotate-0' : 'text-slate-600'
                             }`}
                           />
                         </div>
@@ -209,7 +236,7 @@ export const Zone4Arcade: React.FC<Zone4Props> = ({ onNextZone }) => {
 
                     {/* Mobile Inline Expansion: Appears directly down under clicked project */}
                     {isSelected && (
-                      <div className="lg:hidden">
+                      <div className="md:hidden pt-1">
                         {renderProjectDetails(project)}
                       </div>
                     )}
@@ -218,8 +245,8 @@ export const Zone4Arcade: React.FC<Zone4Props> = ({ onNextZone }) => {
               })}
             </div>
 
-            {/* Right Column: Arcade Machine Screen & GitHub Link (Desktop view) */}
-            <div className="hidden lg:block lg:col-span-7">
+            {/* Right Column: Arcade Machine Screen & GitHub Link (Desktop / Tablet view) */}
+            <div className="hidden md:block md:col-span-7">
               {renderProjectDetails(activeProject)}
             </div>
           </div>

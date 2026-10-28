@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { 
   Coffee, 
   Bike, 
@@ -30,6 +30,7 @@ export const Zone6SafeHouse: React.FC<Zone6Props> = ({ onNextZone }) => {
   const [photoIndex, setPhotoIndex] = useState<number>(0);
   const [videoRotation, setVideoRotation] = useState<number>(90);
   const [imgError, setImgError] = useState<boolean>(false);
+  const hobbyRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
   const activeHobby = hobbies.find((h) => h.id === selectedHobbyId) || hobbies[0];
   const activeGallery = activeHobby.gallery && activeHobby.gallery.length > 0 ? activeHobby.gallery : [activeHobby.image];
@@ -37,12 +38,27 @@ export const Zone6SafeHouse: React.FC<Zone6Props> = ({ onNextZone }) => {
 
   const handleSelectHobby = (id: string) => {
     sound.playClick();
-    setSelectedHobbyId((prev) => (prev === id ? '' : id));
+    setSelectedHobbyId(id);
     setPhotoIndex(0);
     setImgError(false);
     const item = hobbies.find((h) => h.id === id);
     if (item && item.videoRotation !== undefined) {
       setVideoRotation(item.videoRotation);
+    }
+
+    // On mobile screens (< 768px), smoothly scroll so the clicked hobby & details are in view
+    if (window.innerWidth < 768) {
+      setTimeout(() => {
+        const el = hobbyRefs.current[id];
+        if (el) {
+          const navOffset = 64;
+          const top = el.getBoundingClientRect().top + window.pageYOffset - navOffset;
+          window.scrollTo({
+            top: Math.max(0, top),
+            behavior: 'smooth',
+          });
+        }
+      }, 60);
     }
   };
 
@@ -335,9 +351,9 @@ export const Zone6SafeHouse: React.FC<Zone6Props> = ({ onNextZone }) => {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <div className="max-w-6xl mx-auto w-full grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
         {/* Left Column: Interactive Side Quest Pills */}
-        <div className="lg:col-span-5 space-y-3">
+        <div className="md:col-span-5 space-y-3">
           <div className="text-xs font-pixel text-slate-400 mb-2 flex items-center gap-1.5">
             <Coffee className="w-3.5 h-3.5 text-emerald-400" />
             SELECT HOBBY & SIDE QUEST:
@@ -346,7 +362,13 @@ export const Zone6SafeHouse: React.FC<Zone6Props> = ({ onNextZone }) => {
           {hobbies.map((hobby) => {
             const isSelected = selectedHobbyId === hobby.id;
             return (
-              <div key={hobby.id} className="space-y-3">
+              <div
+                key={hobby.id}
+                ref={(el) => {
+                  hobbyRefs.current[hobby.id] = el;
+                }}
+                className="space-y-3"
+              >
                 <div
                   onClick={() => handleSelectHobby(hobby.id)}
                   className={`cursor-pointer p-3.5 border-2 transition-all shadow-pixel ${
@@ -374,9 +396,12 @@ export const Zone6SafeHouse: React.FC<Zone6Props> = ({ onNextZone }) => {
                       <span className="text-[10px] font-mono px-2 py-0.5 bg-slate-900 border border-slate-700 text-emerald-400">
                         {hobby.tag}
                       </span>
+                      <span className="md:hidden text-[9px] font-pixel text-slate-400">
+                        {isSelected ? 'OPEN ▼' : 'VIEW >'}
+                      </span>
                       <ChevronRight
                         className={`w-4 h-4 transition-transform duration-200 ${
-                          isSelected ? 'text-emerald-400 rotate-90' : 'text-slate-600'
+                          isSelected ? 'text-emerald-400 md:translate-x-1 rotate-90 md:rotate-0' : 'text-slate-600'
                         }`}
                       />
                     </div>
@@ -385,7 +410,7 @@ export const Zone6SafeHouse: React.FC<Zone6Props> = ({ onNextZone }) => {
 
                 {/* Mobile Inline Expansion: Appears directly down under clicked hobby */}
                 {isSelected && (
-                  <div className="lg:hidden">
+                  <div className="md:hidden pt-1">
                     {renderHobbyDetails(hobby)}
                   </div>
                 )}
@@ -394,8 +419,8 @@ export const Zone6SafeHouse: React.FC<Zone6Props> = ({ onNextZone }) => {
           })}
         </div>
 
-        {/* Right Column: Media Display (Photos / Videos) & Lore (Desktop View) */}
-        <div className="hidden lg:block lg:col-span-7">
+        {/* Right Column: Media Display (Photos / Videos) & Lore (Desktop / Tablet View) */}
+        <div className="hidden md:block md:col-span-7">
           {renderHobbyDetails(activeHobby)}
         </div>
       </div>

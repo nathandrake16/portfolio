@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Building2, Landmark, GraduationCap, CheckCircle2, ChevronRight, BarChart3, Users, Zap, ShieldCheck } from 'lucide-react';
 import { portfolioData } from '../../data/portfolioData';
 import { sound } from '../../utils/audio';
@@ -10,8 +10,29 @@ interface Zone2Props {
 export const Zone2TechHub: React.FC<Zone2Props> = ({ onNextZone }) => {
   const { experience } = portfolioData;
   const [selectedId, setSelectedId] = useState<string>(experience[0].id);
+  const cardRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
   const activeExp = experience.find((e) => e.id === selectedId) || experience[0];
+
+  const handleSelect = (id: string) => {
+    sound.playClick();
+    setSelectedId(id);
+
+    // On mobile screens (< 768px), smoothly scroll so the clicked item & details are in view
+    if (window.innerWidth < 768) {
+      setTimeout(() => {
+        const el = cardRefs.current[id];
+        if (el) {
+          const navOffset = 64;
+          const top = el.getBoundingClientRect().top + window.pageYOffset - navOffset;
+          window.scrollTo({
+            top: Math.max(0, top),
+            behavior: 'smooth',
+          });
+        }
+      }, 60);
+    }
+  };
 
   const getIcon = (id: string) => {
     switch (id) {
@@ -130,9 +151,9 @@ export const Zone2TechHub: React.FC<Zone2Props> = ({ onNextZone }) => {
         </p>
       </div>
 
-      <div className="max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <div className="max-w-6xl mx-auto w-full grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
         {/* Left Column: Interactive Skyline Buildings Selector */}
-        <div className="lg:col-span-5 space-y-4">
+        <div className="md:col-span-5 space-y-4">
           <div className="text-xs font-pixel text-slate-400 mb-2 flex items-center gap-1.5">
             <Zap className="w-3.5 h-3.5 text-cyber-cyan" />
             SELECT ENTERPRISE CHECKPOINT:
@@ -141,12 +162,15 @@ export const Zone2TechHub: React.FC<Zone2Props> = ({ onNextZone }) => {
           {experience.map((item) => {
             const isSelected = selectedId === item.id;
             return (
-              <div key={item.id} className="space-y-3">
+              <div
+                key={item.id}
+                ref={(el) => {
+                  cardRefs.current[item.id] = el;
+                }}
+                className="space-y-3"
+              >
                 <div
-                  onClick={() => {
-                    sound.playClick();
-                    setSelectedId((prev) => (prev === item.id ? '' : item.id));
-                  }}
+                  onClick={() => handleSelect(item.id)}
                   className={`cursor-pointer p-4 border-2 transition-all shadow-pixel ${
                     isSelected
                       ? 'bg-slate-900 border-cyber-cyan shadow-pixel-cyan'
@@ -174,11 +198,16 @@ export const Zone2TechHub: React.FC<Zone2Props> = ({ onNextZone }) => {
                         </p>
                       </div>
                     </div>
-                    <ChevronRight
-                      className={`w-5 h-5 transition-transform duration-200 ${
-                        isSelected ? 'text-cyber-cyan rotate-90' : 'text-slate-600'
-                      }`}
-                    />
+                    <div className="flex items-center space-x-1.5">
+                      <span className="md:hidden text-[9px] font-pixel text-slate-400">
+                        {isSelected ? 'OPEN ▼' : 'VIEW >'}
+                      </span>
+                      <ChevronRight
+                        className={`w-5 h-5 transition-transform duration-200 ${
+                          isSelected ? 'text-cyber-cyan md:translate-x-1 rotate-90 md:rotate-0' : 'text-slate-600'
+                        }`}
+                      />
+                    </div>
                   </div>
 
                   <div className="mt-3 flex items-center justify-between text-[11px] font-mono text-slate-400 border-t border-slate-800/80 pt-2">
@@ -189,7 +218,7 @@ export const Zone2TechHub: React.FC<Zone2Props> = ({ onNextZone }) => {
 
                 {/* Mobile Inline Expansion (Comes directly down under the clicked card on phones) */}
                 {isSelected && (
-                  <div className="lg:hidden">
+                  <div className="md:hidden pt-1">
                     {renderDetails(item)}
                   </div>
                 )}
@@ -198,8 +227,8 @@ export const Zone2TechHub: React.FC<Zone2Props> = ({ onNextZone }) => {
           })}
         </div>
 
-        {/* Right Column: Deep-Dive Terminal Card for Selected Quest (Desktop view) */}
-        <div className="hidden lg:block lg:col-span-7">
+        {/* Right Column: Deep-Dive Terminal Card for Selected Quest (Desktop / Tablet view) */}
+        <div className="hidden md:block md:col-span-7">
           {renderDetails(activeExp)}
         </div>
       </div>
