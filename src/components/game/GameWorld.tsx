@@ -23,18 +23,45 @@ export const GameWorld: React.FC<GameWorldProps> = ({ activeZoneId, onZoneChange
   const [isMoving, setIsMoving] = useState<boolean>(false);
   const [avatarDirection, setAvatarDirection] = useState<'left' | 'right'>('right');
 
+  const isProgrammaticScrollRef = useRef<boolean>(false);
+  const scrollTimeoutRef = useRef<number | null>(null);
+
   const { zones } = portfolioData;
   const currentZone = zones.find((z) => z.id === activeZoneId) || zones[0];
 
-  // Scroll to active zone when changed from outside
+  const scrollToZone = (id: number) => {
+    const targetElement = document.getElementById(`zone-${id}`);
+    if (!targetElement) return;
+
+    isProgrammaticScrollRef.current = true;
+    if (scrollTimeoutRef.current) {
+      window.clearTimeout(scrollTimeoutRef.current);
+    }
+
+    onZoneChange(id);
+
+    const navOffset = 64;
+    const elementPosition = targetElement.getBoundingClientRect().top;
+    const targetY = elementPosition + window.pageYOffset - navOffset;
+
+    window.scrollTo({
+      top: Math.max(0, targetY),
+      behavior: 'smooth',
+    });
+
+    scrollTimeoutRef.current = window.setTimeout(() => {
+      isProgrammaticScrollRef.current = false;
+    }, 1000);
+  };
+
+  // Scroll to active zone when changed from outside (e.g. keyboard navigation)
   useEffect(() => {
-    const targetElement = document.getElementById(`zone-${activeZoneId}`);
-    if (targetElement) {
-      targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (!isProgrammaticScrollRef.current) {
+      scrollToZone(activeZoneId);
     }
   }, [activeZoneId]);
 
-  // Track scroll position to calculate progress and determine active zone
+  // Track scroll position to calculate progress and determine active zone during manual scroll
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
@@ -42,7 +69,12 @@ export const GameWorld: React.FC<GameWorldProps> = ({ activeZoneId, onZoneChange
       const progress = docHeight > 0 ? scrollY / docHeight : 0;
       setScrollProgress(progress);
 
-      // Determine which zone is in view
+      // Prevent scroll race condition while programmatic smooth scroll is underway
+      if (isProgrammaticScrollRef.current) {
+        return;
+      }
+
+      // Determine which zone is in view during manual scroll
       const zoneElements = zones.map((z) => ({
         id: z.id,
         el: document.getElementById(`zone-${z.id}`),
@@ -62,8 +94,19 @@ export const GameWorld: React.FC<GameWorldProps> = ({ activeZoneId, onZoneChange
       }
     };
 
+    const cancelProgrammaticLock = () => {
+      isProgrammaticScrollRef.current = false;
+    };
+
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('wheel', cancelProgrammaticLock, { passive: true });
+    window.addEventListener('touchstart', cancelProgrammaticLock, { passive: true });
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('wheel', cancelProgrammaticLock);
+      window.removeEventListener('touchstart', cancelProgrammaticLock);
+    };
   }, [activeZoneId, onZoneChange, zones]);
 
   // Keyboard navigation (Arrow keys / WASD / Space)
@@ -107,7 +150,7 @@ export const GameWorld: React.FC<GameWorldProps> = ({ activeZoneId, onZoneChange
   }, [activeZoneId, onZoneChange]);
 
   const goToZone = (id: number) => {
-    onZoneChange(id);
+    scrollToZone(id);
   };
 
   return (
@@ -117,25 +160,25 @@ export const GameWorld: React.FC<GameWorldProps> = ({ activeZoneId, onZoneChange
 
       {/* World Map Checkpoints */}
       <div className="relative z-10 flex flex-col">
-        <div id="zone-1">
+        <div id="zone-1" className="scroll-mt-20">
           <Zone1Spawn onNextZone={() => goToZone(2)} />
         </div>
-        <div id="zone-2">
+        <div id="zone-2" className="scroll-mt-20">
           <Zone2TechHub onNextZone={() => goToZone(3)} />
         </div>
-        <div id="zone-3">
+        <div id="zone-3" className="scroll-mt-20">
           <Zone3Intersection onNextZone={() => goToZone(4)} />
         </div>
-        <div id="zone-4">
+        <div id="zone-4" className="scroll-mt-20">
           <Zone4Arcade onNextZone={() => goToZone(5)} />
         </div>
-        <div id="zone-5">
+        <div id="zone-5" className="scroll-mt-20">
           <Zone5GuildHall onNextZone={() => goToZone(6)} />
         </div>
-        <div id="zone-6">
+        <div id="zone-6" className="scroll-mt-20">
           <Zone6SafeHouse onNextZone={() => goToZone(7)} />
         </div>
-        <div id="zone-7">
+        <div id="zone-7" className="scroll-mt-20">
           <Zone7Extraction onRestartRun={() => goToZone(1)} />
         </div>
       </div>

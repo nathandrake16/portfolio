@@ -16,6 +16,84 @@ export const Zone4Arcade: React.FC<Zone4Props> = ({ onNextZone }) => {
 
   const activeProject = projects.find((p) => p.id === selectedProjectId) || projects[0];
 
+  const renderProjectDetails = (project: typeof activeProject) => (
+    <div className="glass-panel border-2 border-slate-700 p-4 sm:p-6 shadow-pixel space-y-4">
+      {/* Cartridge Marquee */}
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-700/80 pb-3">
+        <div className="flex items-center space-x-3">
+          <PixelArcadeCabinet color={project.cartridgeColor} />
+          <div>
+            <span className="text-[9px] sm:text-[10px] font-pixel text-slate-400">CARTRIDGE MOUNTED:</span>
+            <h3 className="font-mono text-base sm:text-xl font-bold text-white mt-0.5">
+              {project.title}
+            </h3>
+            <p className="font-mono text-xs text-cyber-purple">
+              {project.subtitle}
+            </p>
+          </div>
+        </div>
+
+        <a
+          href={project.githubUrl}
+          target="_blank"
+          rel="noreferrer"
+          onClick={() => sound.playCoin()}
+          className="inline-flex items-center space-x-1.5 px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-cyber-cyan border-2 border-cyber-cyan shadow-pixel-cyan font-pixel text-[11px] sm:text-xs transition-all"
+        >
+          <GithubIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+          <span>VIEW GITHUB REPO</span>
+          <ExternalLink className="w-3 h-3 sm:w-3.5 sm:h-3.5 ml-1" />
+        </a>
+      </div>
+
+      {/* Description */}
+      <p className="text-xs sm:text-sm text-slate-300 font-sans leading-relaxed">
+        {project.description}
+      </p>
+
+      {/* Verified Metrics Grid */}
+      <div>
+        <div className="text-[9px] sm:text-[10px] font-pixel text-slate-400 mb-1.5">BENCHMARK METRICS:</div>
+        <div className="grid grid-cols-3 gap-2">
+          {project.metrics.map((m, idx) => (
+            <div key={idx} className="p-2 sm:p-2.5 bg-slate-900/90 border border-slate-700 text-center">
+              <div className="font-pixel text-[11px] sm:text-xs text-cyber-cyan font-bold">{m.value}</div>
+              <div className="font-mono text-[9px] sm:text-[10px] text-slate-400 mt-0.5">{m.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Technical Bullets */}
+      <div>
+        <div className="text-[9px] sm:text-[10px] font-pixel text-slate-400 mb-1.5">SYSTEM HIGHLIGHTS:</div>
+        <ul className="space-y-1.5">
+          {project.bullets.map((b, idx) => (
+            <li key={idx} className="flex items-start space-x-2 text-xs sm:text-sm text-slate-200 font-sans leading-relaxed">
+              <CheckCircle2 className="w-3.5 h-3.5 text-cyber-purple mt-0.5 shrink-0" />
+              <span>{b}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Tags */}
+      <div className="border-t border-slate-800 pt-3">
+        <div className="text-[9px] sm:text-[10px] font-pixel text-slate-400 mb-1.5">TECH STACK:</div>
+        <div className="flex flex-wrap gap-1.5">
+          {project.tags.map((tag, idx) => (
+            <span
+              key={idx}
+              className="px-2 py-0.5 bg-slate-900 text-slate-300 border border-slate-700 font-mono text-[10px] sm:text-xs"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <section className="relative min-w-[100vw] w-full min-h-[calc(100vh-100px)] flex flex-col justify-center px-4 sm:px-8 py-12">
       {/* Zone Header Badge */}
@@ -80,141 +158,69 @@ export const Zone4Arcade: React.FC<Zone4Props> = ({ onNextZone }) => {
               {projects.map((project, idx) => {
                 const isSelected = selectedProjectId === project.id;
                 return (
-                  <div
-                    key={project.id}
-                    onClick={() => {
-                      sound.playCoin();
-                      setSelectedProjectId(project.id);
-                    }}
-                    className={`cursor-pointer p-3.5 border-2 transition-all shadow-pixel relative group ${
-                      isSelected
-                        ? 'bg-slate-900 border-cyber-purple shadow-[0_0_15px_rgba(168,85,247,0.4)]'
-                        : 'bg-slate-950/90 border-slate-800 hover:border-slate-700 hover:bg-slate-900/60'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        {/* Cartridge notch icon */}
-                        <div
-                          className="w-8 h-8 flex items-center justify-center font-pixel text-xs text-black border border-black shadow-sm"
-                          style={{ backgroundColor: project.cartridgeColor }}
-                        >
-                          0{idx + 1}
-                        </div>
-                        <div>
-                          <div className="flex items-center space-x-2">
-                            <h4 className="font-mono text-sm font-bold text-white group-hover:text-cyber-cyan transition-colors">
-                              {project.title}
-                            </h4>
-                            {project.featured && (
-                              <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
-                            )}
+                  <div key={project.id} className="space-y-3">
+                    <div
+                      onClick={() => {
+                        sound.playCoin();
+                        setSelectedProjectId((prev) => (prev === project.id ? '' : project.id));
+                      }}
+                      className={`cursor-pointer p-3.5 border-2 transition-all shadow-pixel relative group ${
+                        isSelected
+                          ? 'bg-slate-900 border-cyber-purple shadow-[0_0_15px_rgba(168,85,247,0.4)]'
+                          : 'bg-slate-950/90 border-slate-800 hover:border-slate-700 hover:bg-slate-900/60'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-3">
+                          {/* Cartridge notch icon */}
+                          <div
+                            className="w-8 h-8 flex items-center justify-center font-pixel text-xs text-black border border-black shadow-sm"
+                            style={{ backgroundColor: project.cartridgeColor }}
+                          >
+                            0{idx + 1}
                           </div>
-                          <p className="font-mono text-[11px] text-slate-400 truncate max-w-[200px]">
-                            {project.subtitle}
-                          </p>
+                          <div>
+                            <div className="flex items-center space-x-2">
+                              <h4 className="font-mono text-sm font-bold text-white group-hover:text-cyber-cyan transition-colors">
+                                {project.title}
+                              </h4>
+                              {project.featured && (
+                                <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+                              )}
+                            </div>
+                            <p className="font-mono text-[11px] text-slate-400 truncate max-w-[200px]">
+                              {project.subtitle}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center space-x-2">
+                          <span className="text-[10px] font-mono px-2 py-0.5 bg-slate-900 border border-slate-700 text-slate-300">
+                            {project.category}
+                          </span>
+                          <ChevronRight
+                            className={`w-4 h-4 transition-transform duration-200 ${
+                              isSelected ? 'text-cyber-purple rotate-90' : 'text-slate-600'
+                            }`}
+                          />
                         </div>
                       </div>
-
-                      <span className="text-[10px] font-mono px-2 py-0.5 bg-slate-900 border border-slate-700 text-slate-300">
-                        {project.category}
-                      </span>
                     </div>
+
+                    {/* Mobile Inline Expansion: Appears directly down under clicked project */}
+                    {isSelected && (
+                      <div className="lg:hidden">
+                        {renderProjectDetails(project)}
+                      </div>
+                    )}
                   </div>
                 );
               })}
-
-              <div className="pt-2">
-                <button
-                  onClick={() => {
-                    sound.playCheckpoint();
-                    onNextZone();
-                  }}
-                  className="w-full inline-flex items-center justify-center space-x-2 px-4 py-3 bg-slate-900 hover:bg-slate-800 text-cyber-purple font-pixel text-xs border-2 border-cyber-purple shadow-pixel transition-all"
-                >
-                  <span>ADVANCE TO THE GUILD HALL</span>
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              </div>
             </div>
 
-            {/* Right Column: Arcade Machine Screen & GitHub Link */}
-            <div className="lg:col-span-7">
-              <div className="glass-panel border-2 border-slate-700 p-5 sm:p-6 shadow-pixel space-y-5">
-                {/* Cartridge Marquee */}
-                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-700/80 pb-4">
-                  <div className="flex items-center space-x-3">
-                    <PixelArcadeCabinet color={activeProject.cartridgeColor} />
-                    <div>
-                      <span className="text-[10px] font-pixel text-slate-400">CARTRIDGE MOUNTED:</span>
-                      <h3 className="font-mono text-lg sm:text-xl font-bold text-white mt-0.5">
-                        {activeProject.title}
-                      </h3>
-                      <p className="font-mono text-xs text-cyber-purple">
-                        {activeProject.subtitle}
-                      </p>
-                    </div>
-                  </div>
-
-                  <a
-                    href={activeProject.githubUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    onClick={() => sound.playCoin()}
-                    className="inline-flex items-center space-x-2 px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-cyber-cyan border-2 border-cyber-cyan shadow-pixel-cyan font-pixel text-xs transition-all"
-                  >
-                    <GithubIcon className="w-4 h-4" />
-                    <span>VIEW GITHUB REPO</span>
-                    <ExternalLink className="w-3.5 h-3.5 ml-1" />
-                  </a>
-                </div>
-
-                {/* Description */}
-                <p className="text-xs sm:text-sm text-slate-300 font-sans leading-relaxed">
-                  {activeProject.description}
-                </p>
-
-                {/* Verified Metrics Grid */}
-                <div>
-                  <div className="text-[10px] font-pixel text-slate-400 mb-2">BENCHMARK METRICS:</div>
-                  <div className="grid grid-cols-3 gap-2.5">
-                    {activeProject.metrics.map((m, idx) => (
-                      <div key={idx} className="p-3 bg-slate-900/90 border border-slate-700 text-center">
-                        <div className="font-pixel text-xs text-cyber-cyan font-bold">{m.value}</div>
-                        <div className="font-mono text-[10px] text-slate-400 mt-1">{m.label}</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Technical Bullets */}
-                <div>
-                  <div className="text-[10px] font-pixel text-slate-400 mb-2">SYSTEM HIGHLIGHTS:</div>
-                  <ul className="space-y-2">
-                    {activeProject.bullets.map((b, idx) => (
-                      <li key={idx} className="flex items-start space-x-2 text-xs sm:text-sm text-slate-200 font-sans">
-                        <CheckCircle2 className="w-4 h-4 text-cyber-purple mt-0.5 shrink-0" />
-                        <span>{b}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Tags */}
-                <div className="border-t border-slate-800 pt-3">
-                  <div className="text-[10px] font-pixel text-slate-400 mb-2">TECH STACK:</div>
-                  <div className="flex flex-wrap gap-1.5">
-                    {activeProject.tags.map((tag, idx) => (
-                      <span
-                        key={idx}
-                        className="px-2 py-0.5 bg-slate-900 text-slate-300 border border-slate-700 font-mono text-xs"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
+            {/* Right Column: Arcade Machine Screen & GitHub Link (Desktop view) */}
+            <div className="hidden lg:block lg:col-span-7">
+              {renderProjectDetails(activeProject)}
             </div>
           </div>
         ) : (
@@ -261,6 +267,20 @@ export const Zone4Arcade: React.FC<Zone4Props> = ({ onNextZone }) => {
             </div>
           </div>
         )}
+      </div>
+
+      {/* Advance Checkpoint Button (Always at bottom of section) */}
+      <div className="max-w-6xl mx-auto w-full pt-6">
+        <button
+          onClick={() => {
+            sound.playCheckpoint();
+            onNextZone();
+          }}
+          className="w-full sm:w-auto sm:min-w-[340px] inline-flex items-center justify-center space-x-2 px-5 py-3.5 bg-slate-900 hover:bg-slate-800 text-cyber-purple font-pixel text-xs border-2 border-cyber-purple shadow-pixel hover:shadow-[0_0_15px_rgba(168,85,247,0.4)] transition-all"
+        >
+          <span>ADVANCE TO THE GUILD HALL</span>
+          <ChevronRight className="w-4 h-4" />
+        </button>
       </div>
     </section>
   );
