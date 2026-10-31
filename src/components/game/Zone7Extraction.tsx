@@ -4,6 +4,7 @@ import { GithubIcon, LinkedinIcon } from '../icons/BrandIcons';
 import confetti from 'canvas-confetti';
 import { portfolioData } from '../../data/portfolioData';
 import { sound } from '../../utils/audio';
+import { VisitorBadge } from '../VisitorBadge';
 
 interface Zone7Props {
   onRestartRun: () => void;
@@ -244,8 +245,9 @@ export const Zone7Extraction: React.FC<Zone7Props> = ({ onRestartRun }) => {
               </form>
             )}
 
-            <div className="pt-2 text-center text-[10px] font-mono text-slate-500">
-              Md. Shahadat Hossain Shamim • Dhaka, Bangladesh • "Always On The Run"
+            <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-2 text-[10px] font-mono text-slate-500 border-t border-slate-800/80 mt-3">
+              <span>Md. Shahadat Hossain Shamim • Dhaka, Bangladesh • "Always On The Run"</span>
+              <VisitorBadge variant="pill" />
             </div>
           </div>
         </div>

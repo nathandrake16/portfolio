@@ -21,6 +21,7 @@ import {
 import { GithubIcon, LinkedinIcon, FacebookIcon } from '../icons/BrandIcons';
 import { portfolioData } from '../../data/portfolioData';
 import { sound } from '../../utils/audio';
+import { VisitorBadge } from '../VisitorBadge';
 
 interface RecruiterViewProps {
   onSwitchToGameMode: () => void;
@@ -101,6 +102,8 @@ export const RecruiterView: React.FC<RecruiterViewProps> = ({ onSwitchToGameMode
                   <span className="text-slate-300">
                     AdTech Product Intern @ Grameenphone
                   </span>
+                  <span>•</span>
+                  <VisitorBadge variant="pill" />
                 </div>
               </div>
             </div>

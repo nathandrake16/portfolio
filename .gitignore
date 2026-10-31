@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Ignore loose non-portfolio PDFs in image folders
+public/images/**/*.pdf

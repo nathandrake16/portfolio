@@ -4,6 +4,7 @@ import { GithubIcon, LinkedinIcon } from '../icons/BrandIcons';
 import { portfolioData } from '../../data/portfolioData';
 import { PixelAvatar } from '../pixel/PixelSprites';
 import { sound } from '../../utils/audio';
+import { VisitorBadge } from '../VisitorBadge';
 
 interface Zone1Props {
   onNextZone: () => void;
@@ -63,7 +64,7 @@ export const Zone1Spawn: React.FC<Zone1Props> = ({ onNextZone }) => {
               </span>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-mono">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-mono">
               <div className="bg-slate-900/80 p-2.5 border border-slate-700">
                 <div className="text-slate-400 text-[11px]">Primary Institution</div>
                 <div className="text-white font-bold mt-0.5">{bracuEdu.institution}</div>
@@ -77,6 +78,9 @@ export const Zone1Spawn: React.FC<Zone1Props> = ({ onNextZone }) => {
                 <div className="text-cyber-cyan font-bold mt-0.5">AdTech Product Intern</div>
                 <div className="text-slate-300 text-[11px] mt-1">@ Grameenphone</div>
               </div>
+
+              {/* Visited Run Counter */}
+              <VisitorBadge variant="hud" />
             </div>
 
             {/* Honours Ribbon */}

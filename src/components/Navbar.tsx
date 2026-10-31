@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { portfolioData } from '../data/portfolioData';
 import { sound } from '../utils/audio';
+import { VisitorBadge } from './VisitorBadge';
 
 interface NavbarProps {
   mode: 'game' | 'recruiter';
@@ -113,8 +114,11 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
         </div>
 
-        {/* Right Controls: Audio & Download CV */}
+        {/* Right Controls: Visited Count, Audio & Download CV */}
         <div className="flex items-center space-x-2">
+          {/* Live Visitor Counter */}
+          <VisitorBadge variant="navbar" />
+
           {/* Audio Mute/Unmute */}
           <button
             onClick={onToggleMute}
